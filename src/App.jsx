@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
+const MOVE_MAP = {
+  ArrowLeft: { row: 0, col: -1 },
+  ArrowRight: { row: 0, col: 1 },
+  ArrowUp: { row: -1, col: 0 },
+  ArrowDown: { row: 1, col: 0 },
+  a: { row: 0, col: -1 },
+  d: { row: 0, col: 1 },
+  w: { row: -1, col: 0 },
+  s: { row: 1, col: 0 },
+}
+
 const resolveBoxes = (layout, desiredBoxes) => {
   const used = new Set()
   const isOpen = (row, col) =>
@@ -222,14 +233,14 @@ function App() {
         boxes: [
           { row: 1, col: 2 },
           { row: 1, col: 20 },
-          { row: 3, col: 8 },
+          { row: 3, col: 10 },
           { row: 5, col: 14 },
           { row: 7, col: 3 },
           { row: 9, col: 18 },
           { row: 11, col: 2 },
           { row: 13, col: 10 },
           { row: 14, col: 16 },
-          { row: 15, col: 6 },
+          { row: 15, col: 7 },
           { row: 16, col: 12 },
           { row: 17, col: 4 },
         ],
@@ -296,20 +307,20 @@ function App() {
       6: {
         layout: [
           '#########################',
+          '#.......................#',
+          '#######################.#',
+          '#.......................#',
+          '#.#######################',
+          '#.......................#',
+          '#######################.#',
+          '#.......................#',
+          '#.#######################',
+          '#.......................#',
+          '#######################.#',
+          '#.......................#',
+          '#.#######################',
+          '#.......................#',
           '#......................E#',
-          '#######################.#',
-          '#.......................#',
-          '#.#######################',
-          '#.......................#',
-          '#######################.#',
-          '#.......................#',
-          '#.#######################',
-          '#.......................#',
-          '#######################.#',
-          '#.......................#',
-          '#.#######################',
-          '#.......................#',
-          '#.......................#',
           '#########################',
         ],
         boxes: [
@@ -354,6 +365,9 @@ function App() {
   const [flashType, setFlashType] = useState(null)
   const [gameOver, setGameOver] = useState(false)
   const [win, setWin] = useState(false)
+  const [sceneMoveKey, setSceneMoveKey] = useState(null)
+  const [mazeMoveKey, setMazeMoveKey] = useState(null)
+  const [isFastMove, setIsFastMove] = useState(false)
 
   const triggerFlash = (type) => {
     setFlashType(type)
@@ -386,7 +400,7 @@ function App() {
   }
 
   useEffect(() => {
-    const handleKey = (event) => {
+    const handleKeyDown = (event) => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key
       if (gameOver && (key === 'r' || key === 'enter')) {
         resetGame()
@@ -398,66 +412,88 @@ function App() {
       }
       if (gameOver) return
       if (win) return
-      if (mode === 'scene') {
-        const step = event.shiftKey ? 4 : 2
-        setPos((current) => {
-          let nextX = current.x
-          let nextY = current.y
 
-          if (key === 'ArrowLeft' || key === 'a') nextX -= step
-          if (key === 'ArrowRight' || key === 'd') nextX += step
-          if (key === 'ArrowUp' || key === 'w') nextY -= step
-          if (key === 'ArrowDown' || key === 's') nextY += step
-
-          return {
-            x: Math.min(85, Math.max(15, nextX)),
-            y: Math.min(90, Math.max(60, nextY)),
-          }
-        })
+      if (key === 'shift') {
+        setIsFastMove(true)
         return
       }
 
-      if (mode === 'maze') {
-        const allowedKeys = [
-          'ArrowLeft',
-          'ArrowRight',
-          'ArrowUp',
-          'ArrowDown',
-          'w',
-          'a',
-          's',
-          'd',
-        ]
-        if (!allowedKeys.includes(key)) {
-          return
-        }
-        const moves = {
-          ArrowLeft: { row: 0, col: -1 },
-          ArrowRight: { row: 0, col: 1 },
-          ArrowUp: { row: -1, col: 0 },
-          ArrowDown: { row: 1, col: 0 },
-          a: { row: 0, col: -1 },
-          d: { row: 0, col: 1 },
-          w: { row: -1, col: 0 },
-          s: { row: 1, col: 0 },
-        }
-        const move = moves[key]
-        const step = event.shiftKey ? 2 : 1
+      if (!MOVE_MAP[key]) return
 
+      setIsFastMove(event.shiftKey)
+      if (mode === 'scene') {
+        setSceneMoveKey(key)
+        return
+      }
+      if (mode === 'maze') {
+        setMazeMoveKey(key)
+        const move = MOVE_MAP[key]
         if (move.col === -1) setMazeDir('left')
         if (move.col === 1) setMazeDir('right')
         if (move.row === -1) setMazeDir('up')
         if (move.row === 1) setMazeDir('down')
+      }
+    }
 
-        setMazePos((current) => {
-          let next = { ...current }
-          for (let i = 0; i < step; i += 1) {
-            const candidate = {
-              row: next.row + move.row,
-              col: next.col + move.col,
-            }
-            const row = mazeLayout[candidate.row]
-            if (!row) return next
+    const handleKeyUp = (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key
+      if (key === 'shift') {
+        setIsFastMove(false)
+        return
+      }
+      if (mode === 'scene' && key === sceneMoveKey) {
+        setSceneMoveKey(null)
+      }
+      if (mode === 'maze' && key === mazeMoveKey) {
+        setMazeMoveKey(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [mode, sceneMoveKey, mazeMoveKey, gameOver, win])
+
+  useEffect(() => {
+    if (mode !== 'scene') return
+    if (gameOver || win) return
+    if (!sceneMoveKey) return
+    const interval = setInterval(() => {
+      const move = MOVE_MAP[sceneMoveKey]
+      if (!move) return
+      const step = isFastMove ? 4 : 2
+      setPos((current) => {
+        let nextX = current.x + move.col * step
+        let nextY = current.y + move.row * step
+        return {
+          x: Math.min(85, Math.max(15, nextX)),
+          y: Math.min(90, Math.max(60, nextY)),
+        }
+      })
+    }, 60)
+    return () => clearInterval(interval)
+  }, [mode, sceneMoveKey, isFastMove, gameOver, win])
+
+  useEffect(() => {
+    if (mode !== 'maze') return
+    if (gameOver || win) return
+    if (!mazeMoveKey) return
+    const interval = setInterval(() => {
+      const move = MOVE_MAP[mazeMoveKey]
+      if (!move) return
+      const step = isFastMove ? 2 : 1
+      setMazePos((current) => {
+        let next = { ...current }
+        for (let i = 0; i < step; i += 1) {
+          const candidate = {
+            row: next.row + move.row,
+            col: next.col + move.col,
+          }
+          const row = mazeLayout[candidate.row]
+          if (!row) return next
           const cell = row[candidate.col]
           if (cell === 'E' && coins < requiredCoins) return next
           if (cell !== '.' && cell !== 'E' && cell !== 'S') return next
@@ -465,12 +501,18 @@ function App() {
         }
         return next
       })
-    }
-  }
-
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [mode, mazeLayout, coins, requiredCoins, gameOver])
+    }, 120)
+    return () => clearInterval(interval)
+  }, [
+    mode,
+    mazeMoveKey,
+    isFastMove,
+    mazeLayout,
+    coins,
+    requiredCoins,
+    gameOver,
+    win,
+  ])
 
   useEffect(() => {
     if (mode !== 'scene') return
