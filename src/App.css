@@ -946,6 +946,69 @@
   color: rgba(233, 237, 246, 0.75);
 }
 
+.dpad {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: none;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(3, 46px);
+  gap: 6px;
+  z-index: 8;
+  opacity: 0.55;
+  touch-action: none;
+}
+
+.dpad-button {
+  border: 1px solid rgba(230, 236, 248, 0.35);
+  background: rgba(18, 24, 36, 0.7);
+  border-radius: 12px;
+  color: rgba(240, 244, 255, 0.9);
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  transition: transform 0.08s ease, background 0.2s ease;
+}
+
+.dpad-button:active {
+  transform: scale(0.96);
+  background: rgba(30, 38, 54, 0.85);
+}
+
+.dpad-center {
+  border-radius: 14px;
+  background: rgba(12, 16, 24, 0.5);
+  border: 1px solid rgba(120, 130, 150, 0.2);
+}
+
+.dpad-button--up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad-button--left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad-button--right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dpad-button--down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dpad-center {
+  grid-column: 2;
+  grid-row: 2;
+}
+
 @media (max-width: 900px) {
   .castle {
     transform: translateX(-50%) scale(0.8);
@@ -958,6 +1021,10 @@
 
   .road {
     width: 240px;
+  }
+
+  .dpad {
+    display: grid;
   }
 }
 
