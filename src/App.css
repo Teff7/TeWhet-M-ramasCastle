@@ -741,7 +741,7 @@
 
 .maze {
   display: grid;
-  gap: 6px;
+  gap: var(--maze-gap, 6px);
 }
 
 .maze--dark .maze-cell {
@@ -793,7 +793,7 @@
 .maze-row {
   display: grid;
   grid-template-columns: repeat(var(--maze-cols), 1fr);
-  gap: 6px;
+  gap: var(--maze-gap, 6px);
 }
 
 .maze-cell {
@@ -872,7 +872,7 @@
 .maze-box::after {
   content: "";
   position: absolute;
-  inset: 6px;
+  inset: clamp(2px, 18%, 6px);
   border-radius: 3px;
   background: linear-gradient(180deg, #7a5a34 0%, #3b2a1a 100%);
   box-shadow: inset 0 0 0 1px rgba(20, 12, 6, 0.7);
@@ -1036,6 +1036,10 @@
 
   .road {
     width: 200px;
+  }
+
+  .maze {
+    --maze-gap: 4px;
   }
 }
 
