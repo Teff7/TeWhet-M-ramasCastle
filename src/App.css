@@ -748,7 +748,7 @@
   filter: none;
 }
 
-.maze--dark .maze-cell::after {
+.maze--dark .maze-cell::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -757,15 +757,15 @@
   z-index: 3;
 }
 
-.maze--dark .maze-cell.maze-vision--bright::after {
+.maze--dark .maze-cell.maze-vision--bright::before {
   opacity: 0;
 }
 
-.maze--dark .maze-cell.maze-vision--dim::after {
+.maze--dark .maze-cell.maze-vision--dim::before {
   opacity: 0.45;
 }
 
-.maze--dark .maze-cell.maze-vision--hidden::after {
+.maze--dark .maze-cell.maze-vision--hidden::before {
   opacity: 1;
 }
 
@@ -831,7 +831,7 @@
   background: url("../Knight.png") center / contain no-repeat;
   transform: translate(-50%, -50%) rotate(0deg);
   transition: transform 120ms ease;
-  z-index: 2;
+  z-index: 4;
 }
 
 .maze-player--left::after {
