@@ -360,7 +360,7 @@ function App() {
   const [traps, setTraps] = useState([])
   const [revealedTraps, setRevealedTraps] = useState(new Set())
   const [enemyPos, setEnemyPos] = useState(currentLevel.enemyStart ?? null)
-  const [mazeDir, setMazeDir] = useState('right')
+  const [mazeDir, setMazeDir] = useState('up')
   const [enemyDir, setEnemyDir] = useState('right')
   const [flashType, setFlashType] = useState(null)
   const [gameOver, setGameOver] = useState(false)
@@ -393,7 +393,7 @@ function App() {
     setTraps(resolveTraps(startLevel.layout, startLevel.traps ?? [], blocked))
     setRevealedTraps(new Set())
     setEnemyPos(startLevel.enemyStart ?? null)
-    setMazeDir('right')
+    setMazeDir('up')
     setEnemyDir('right')
     setGameOver(false)
     setWin(false)
@@ -544,7 +544,7 @@ function App() {
       setBoxes(nextBoxes)
       setTraps(nextTraps)
       setRevealedTraps(new Set())
-      setMazeDir('right')
+      setMazeDir('up')
       setEnemyPos(targetData.enemyStart ?? null)
       setEnemyDir('right')
       setGameOver(false)
@@ -619,7 +619,7 @@ function App() {
       })
       setEnemyPos(nextData.enemyStart ?? null)
       setEnemyDir('right')
-      setMazeDir('right')
+      setMazeDir('up')
       return
     }
     if (mazeLayout[mazePos.row][mazePos.col] !== 'E') return
@@ -632,7 +632,7 @@ function App() {
       setLevel(2)
       setEnemyPos(levels[2]?.enemyStart ?? null)
       setEnemyDir('right')
-      setMazeDir('right')
+      setMazeDir('up')
       return
     }
 
@@ -647,7 +647,7 @@ function App() {
       })
       setEnemyPos(nextData.enemyStart ?? null)
       setEnemyDir('right')
-      setMazeDir('right')
+      setMazeDir('up')
       return
     }
 
@@ -663,7 +663,7 @@ function App() {
       })
       setEnemyPos(nextData.enemyStart ?? null)
       setEnemyDir('right')
-      setMazeDir('right')
+      setMazeDir('up')
       return
     }
 
