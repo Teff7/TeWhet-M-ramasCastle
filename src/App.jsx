@@ -369,6 +369,32 @@ function App() {
   const [mazeMoveKey, setMazeMoveKey] = useState(null)
   const [isFastMove, setIsFastMove] = useState(false)
 
+  const handlePadStart = (key) => {
+    if (gameOver || win) return
+    setIsFastMove(false)
+    if (mode === 'scene') {
+      setSceneMoveKey(key)
+      return
+    }
+    if (mode === 'maze') {
+      setMazeMoveKey(key)
+      const move = MOVE_MAP[key]
+      if (move?.col === -1) setMazeDir('left')
+      if (move?.col === 1) setMazeDir('right')
+      if (move?.row === -1) setMazeDir('up')
+      if (move?.row === 1) setMazeDir('down')
+    }
+  }
+
+  const handlePadEnd = (key) => {
+    if (mode === 'scene' && key === sceneMoveKey) {
+      setSceneMoveKey(null)
+    }
+    if (mode === 'maze' && key === mazeMoveKey) {
+      setMazeMoveKey(null)
+    }
+  }
+
   const triggerFlash = (type) => {
     setFlashType(type)
     setTimeout(() => setFlashType(null), 200)
@@ -819,6 +845,49 @@ function App() {
             ))}
           </div>
         </div>
+        <div className="dpad" aria-hidden="true">
+          <button
+            type="button"
+            className="dpad-button dpad-button--up"
+            onPointerDown={() => handlePadStart('ArrowUp')}
+            onPointerUp={() => handlePadEnd('ArrowUp')}
+            onPointerLeave={() => handlePadEnd('ArrowUp')}
+            onPointerCancel={() => handlePadEnd('ArrowUp')}
+          >
+            ▲
+          </button>
+          <button
+            type="button"
+            className="dpad-button dpad-button--left"
+            onPointerDown={() => handlePadStart('ArrowLeft')}
+            onPointerUp={() => handlePadEnd('ArrowLeft')}
+            onPointerLeave={() => handlePadEnd('ArrowLeft')}
+            onPointerCancel={() => handlePadEnd('ArrowLeft')}
+          >
+            ◀
+          </button>
+          <div className="dpad-center" />
+          <button
+            type="button"
+            className="dpad-button dpad-button--right"
+            onPointerDown={() => handlePadStart('ArrowRight')}
+            onPointerUp={() => handlePadEnd('ArrowRight')}
+            onPointerLeave={() => handlePadEnd('ArrowRight')}
+            onPointerCancel={() => handlePadEnd('ArrowRight')}
+          >
+            ▶
+          </button>
+          <button
+            type="button"
+            className="dpad-button dpad-button--down"
+            onPointerDown={() => handlePadStart('ArrowDown')}
+            onPointerUp={() => handlePadEnd('ArrowDown')}
+            onPointerLeave={() => handlePadEnd('ArrowDown')}
+            onPointerCancel={() => handlePadEnd('ArrowDown')}
+          >
+            ▼
+          </button>
+        </div>
         {gameOver ? (
           <div className="game-over">
             <div className="game-over-card">
@@ -925,6 +994,50 @@ function App() {
       </div>
 
       <div className="ground" />
+
+      <div className="dpad" aria-hidden="true">
+        <button
+          type="button"
+          className="dpad-button dpad-button--up"
+          onPointerDown={() => handlePadStart('ArrowUp')}
+          onPointerUp={() => handlePadEnd('ArrowUp')}
+          onPointerLeave={() => handlePadEnd('ArrowUp')}
+          onPointerCancel={() => handlePadEnd('ArrowUp')}
+        >
+          ▲
+        </button>
+        <button
+          type="button"
+          className="dpad-button dpad-button--left"
+          onPointerDown={() => handlePadStart('ArrowLeft')}
+          onPointerUp={() => handlePadEnd('ArrowLeft')}
+          onPointerLeave={() => handlePadEnd('ArrowLeft')}
+          onPointerCancel={() => handlePadEnd('ArrowLeft')}
+        >
+          ◀
+        </button>
+        <div className="dpad-center" />
+        <button
+          type="button"
+          className="dpad-button dpad-button--right"
+          onPointerDown={() => handlePadStart('ArrowRight')}
+          onPointerUp={() => handlePadEnd('ArrowRight')}
+          onPointerLeave={() => handlePadEnd('ArrowRight')}
+          onPointerCancel={() => handlePadEnd('ArrowRight')}
+        >
+          ▶
+        </button>
+        <button
+          type="button"
+          className="dpad-button dpad-button--down"
+          onPointerDown={() => handlePadStart('ArrowDown')}
+          onPointerUp={() => handlePadEnd('ArrowDown')}
+          onPointerLeave={() => handlePadEnd('ArrowDown')}
+          onPointerCancel={() => handlePadEnd('ArrowDown')}
+        >
+          ▼
+        </button>
+      </div>
     </div>
   )
 }
